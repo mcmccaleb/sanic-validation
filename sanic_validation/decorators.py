@@ -7,7 +7,9 @@ QUERY_ARG_ENTRY_TYPE = 'query_argument'
 REQ_BODY_ENTRY_TYPE = 'request_body'
 
 
-def validate_json(schema, clean=False, status_code=400, validator_class=Validator):
+def validate_json(
+    schema, clean=False, status_code=400, validator_class=Validator
+):
     '''Decorator. Validates request body json.
 
     When *clean* is true, normalized data is passed to the decorated method
@@ -41,7 +43,9 @@ def validate_json(schema, clean=False, status_code=400, validator_class=Validato
     return vd
 
 
-def validate_args(schema, clean=False, status_code=400, validator_class=Validator):
+def validate_args(
+    schema, clean=False, status_code=400, validator_class=Validator
+):
     '''Decorator. Validates querystring arguments.
 
     When *clean* is True, normalized data is passed to the decorated method

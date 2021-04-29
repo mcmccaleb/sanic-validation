@@ -94,25 +94,32 @@ class TestSimpleEndpointArgsTypeNormalizationValidation(unittest.TestCase):
         self.assertEqual(response.json['error']['type'], 'validation_failed')
 
 
+class ExtendedValidator(Validator):
+    def _validate_reversed_string(self, test, field, _value):
+        print(test, field, _value)
+        reversed_field = self.document.get('name')
+        if reversed_field != _value[::-1]:
+            self._error(field, "field is not reversed")
+
+
 class TestSimpleEndpointSubclassValidator(unittest.TestCase):
     _endpoint_schema = {
         'name': {'type': 'string', 'required': True},
-        'reversed': {'type': 'string', 'required': True, 'reversed_string': 'name'},
+        'reversed': {
+            'type': 'string',
+            'required': True,
+            'reversed_string': 'name',
+        },
     }
     _app = None
-
-    class ExtendedValidator(Validator):
-        def _validate_reversed_string(self, test, field, _value):
-            print(test, field, _value)
-            reversed_field = self.document.get('name')
-            if reversed_field != _value[::-1]:
-                self._error(field, "field is not reversed")
 
     def setUp(self):
         self._app = Sanic('test-app')
 
         @self._app.route('/', methods=["POST"])
-        @validate_json(self._endpoint_schema, validator_class=ExtendedValidator)
+        @validate_json(
+            self._endpoint_schema, validator_class=ExtendedValidator
+        )
         async def _simple_endpoint(request):
             return json({'status': 'ok'})
 
@@ -121,7 +128,8 @@ class TestSimpleEndpointSubclassValidator(unittest.TestCase):
             '/', json={'name': 'john', 'reversed': 'john'}
         )
         self.assertEqual(response.status, 400)
-        self.assertEqual(response.json['error']['message'], 'Validation failed.')
+        self.assertEqual(response.json['error']['message'],
+                         'Validation failed.')
         self.assertEqual(response.json['error']['type'], 'validation_failed')
 
     def test_should_pass_validation(self):
