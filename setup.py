@@ -33,7 +33,7 @@ setup(
     license='GPLv3',
     install_requires=['sanic>=19.3', 'cerberus'],
     setup_requires=['pytest-runner', 'pytest-flake8'],
-    tests_require=['pytest', 'aiohttp', 'flake8', 'sanic-testing'],
+    tests_require=['pytest', 'aiohttp<4.0', 'flake8', 'sanic-testing'],
     packages=find_packages(),
     classifiers=[
         'Development Status :: 4 - Beta',
