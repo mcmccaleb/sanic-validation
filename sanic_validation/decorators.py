@@ -7,7 +7,7 @@ QUERY_ARG_ENTRY_TYPE = 'query_argument'
 REQ_BODY_ENTRY_TYPE = 'request_body'
 
 
-def validate_json(schema, clean=False, status_code=400):
+def validate_json(schema, clean=False, status_code=400, validator_class=Validator):
     '''Decorator. Validates request body json.
 
     When *clean* is true, normalized data is passed to the decorated method
@@ -17,8 +17,9 @@ def validate_json(schema, clean=False, status_code=400):
         schema (dict): Cerberus-compatible schema description
         clean (bool): should cleaned json be passed to the decorated method
         status_code (number): status code to return when data is incorrect
+        validator_class (callable): cerberus compatible validator to run schema
     '''
-    validator = Validator(schema)
+    validator = validator_class(schema)
 
     def vd(f):
         @wraps(f)
@@ -40,7 +41,7 @@ def validate_json(schema, clean=False, status_code=400):
     return vd
 
 
-def validate_args(schema, clean=False, status_code=400):
+def validate_args(schema, clean=False, status_code=400, validator_class=Validator):
     '''Decorator. Validates querystring arguments.
 
     When *clean* is True, normalized data is passed to the decorated method
@@ -50,8 +51,9 @@ def validate_args(schema, clean=False, status_code=400):
         schema (dict): Cerberus-compatible schema description
         clean (bool): should cleaned args be passed to the decorated method
         status_code (number): status code to return when data is incorrect
+        validator_class (callable): cerberus compatible validator to run schema
     '''
-    validator = Validator(schema)
+    validator = validator_class(schema)
 
     def vd(f):
         @wraps(f)
