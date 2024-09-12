@@ -2,4 +2,4 @@ from .decorators import validate_json, validate_args
 
 __all__ = [validate_json, validate_args]
 
-__version__ = '0.5.1'
+__version__ = '0.6.0'
